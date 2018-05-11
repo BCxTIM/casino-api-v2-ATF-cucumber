@@ -1,0 +1,28 @@
+{
+  "name": "casino-api-v2-atf-cucumber",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/cucumber-js features/ -r ./features  -f json:./report/results.json",
+    "run": "./node_modules/.bin/cucumber-js features/ -r ./features --tags @Run  -f json:./report/results.json",
+    "report": "node reporter.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "bluebird": "^3.5.1",
+    "cucumber": "^4.2.1",
+    "cucumber-html-reporter": "^4.0.2",
+    "dateformat": "^3.0.3",
+    "express": "^4.16.3",
+    "jasmine-data-provider": "^2.2.0",
+    "lodash": "^4.17.5",
+    "moment": "^2.21.0",
+    "should": "^13.2.1",
+    "supertest": "^3.0.0",
+    "uuid": "^3.2.1",
+    "winston": "^2.4.1",
+    "xml2js": "^0.4.19"
+  }
+}
