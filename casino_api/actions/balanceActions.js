@@ -1,6 +1,6 @@
 const requestActions = require('../requestActions');
 const accountActions = require('./accountActions');
-const should            = require("should");
+const should         = require("should");
 
 module.exports = {
 
@@ -14,7 +14,6 @@ module.exports = {
         };
 
         let {body: {result: response}} = await requestActions.send(req, url).expect(200);
-        console.log(amount);
         response.balance.should.equal(parseFloat(amount).toFixed(2));
     },
 
