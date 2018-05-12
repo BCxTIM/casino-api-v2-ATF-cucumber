@@ -19,6 +19,10 @@ var users = {
 module.exports = {
     getUserDataByUsername: async function (username) {
         return await users[username];
-    }
+    },
+    getAllUsernames      : function () {
+        return Object.getOwnPropertyNames(users);
+    },
+
 
 };

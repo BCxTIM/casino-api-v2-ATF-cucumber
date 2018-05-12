@@ -95,5 +95,7 @@ Feature: Balance tests
 			| BCXTIMRUBTEST |
 			| BCXTIMEURTEST |
 
+		#balance less than 0
+
 
 
