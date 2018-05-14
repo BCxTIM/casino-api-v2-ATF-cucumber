@@ -4,7 +4,7 @@ const balanceActions      = require('../../../casino_api/actions/balanceActions'
 const userData            = require('../../../fixtures/userData');
 
 
-defineSupportCode(function ({After, Before}) {
+defineSupportCode(function ({After}) {
 
     After(async function () {
         userData.getAllUsernames().forEach(async function (username) {
