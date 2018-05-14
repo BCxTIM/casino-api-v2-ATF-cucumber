@@ -13,8 +13,18 @@ module.exports = {
             "search_by": "login"
         };
 
-        let {body: {result: response}} = await requestActions.send(req, url).expect(200);
-        response.balance.should.equal(parseFloat(amount).toFixed(2));
+        let {body: response} = await requestActions.send(req, url);
+        await this.validateAddBalanceResponse(req, response);
+    },
+
+    validateAddBalanceResponse: async function (req, response) {
+        if (req.amount < 0) {
+            response.errors[0].code.should.equal(5005);
+            response.errors[0].message.should.equal('Amount can\'t be less then zero!');
+        } else {
+            response.result.balance.should.equal(parseFloat(req.amount).toFixed(2));
+        }
+
     },
 
     removeBalance: async function (user, amount, isRemoved) {
@@ -28,15 +38,24 @@ module.exports = {
             "search_by": "login"
         };
 
+        let {body: result} = await requestActions.send(req, url);
+        await this.validateRemoveResponseBalance(req, result, account, isRemoved);
+
+    },
+
+    validateRemoveResponseBalance: async function (req, result, account, isRemoved) {
         if (isRemoved.includes("true")) {
-            let {body: response} = await requestActions.send(req, url).expect(200);
-
-            response.result.balance.should.equal((account.balance - amount).toFixed(2));
+            result.result.balance.should.equal((account.balance - req.amount).toFixed(2));
         } else {
-            let {body: response} = await requestActions.send(req, url).expect(400);
+            if (req.amount < 0) {
+                result.result.errors[0].code.should.equal(5005);
+                result.result.errors[0].message.should.equal('Amount can\'t be less then zero!');
+            }
 
-            response.errors[0].code.should.equal(5004);
-            response.errors[0].message.should.equal("Not enough funds!");
+            if (req.amount > account.balance) {
+                result.errors[0].code.should.equal(5004);
+                result.errors[0].message.should.equal("Not enough funds!");
+            }
         }
 
     },

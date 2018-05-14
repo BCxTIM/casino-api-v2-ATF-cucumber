@@ -28,8 +28,8 @@ Feature: Bonus tests
 			| BCXTIMRUBTEST |
 			| BCXTIMEURTEST |
 
-	@INTGR-19
-	Scenario Outline: Add bonus with data less than 0 BUG CA-5
+	@INTGR-19 @BUG_CA-5
+	Scenario Outline: Add bonus with data less than 0
 		Given get account info for '<username>' user
 		And account info have the corresponding data for '<username>' user
 			| name     | amount |
@@ -55,8 +55,8 @@ Feature: Bonus tests
 			| BCXTIMEURTEST | -10.05       | 10    |
 			| BCXTIMEURTEST | 10.05        | -10   |
 
-	@INTGR-19
-	Scenario Outline: Add bonus with non existing status BUG CA-6
+	@INTGR-19 @BUG_CA-6
+	Scenario Outline: Add bonus with non existing status
 		Given get account info for '<username>' user
 		And account info have the corresponding data for '<username>' user
 			| name     | amount |
