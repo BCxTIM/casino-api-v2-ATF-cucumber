@@ -1,6 +1,7 @@
 const sign_token = "7t3jvnyG2mpmy96VqTBKkK4zrbnekU5s";
+const context = require('../config/context');
 const supertest  = require("supertest");
-const agent      = supertest.agent("https://devcapiv2.araxio.tech");
+const agent      = supertest.agent(context.getEnvUrl());
 
 module.exports = {
 
