@@ -28,12 +28,12 @@ defineSupportCode(function ({Given, Then, When}) {
         await data.rows().should.deepEqual(expectedResult);
     });
 
-    When(/^add amount (\d+.\d+) balance for '(.*)' user$/, async function (amount, username) {
+    When(/^add amount (-?\d+.\d+) balance for '(.*)' user$/, async function (amount, username) {
         let user = await userData.getUserDataByUsername(username);
         await balanceActions.addBalance(user, amount);
     });
 
-    When(/^remove balance (\d+) for '(.*)' user (true|false)$/, async function (amount, username, isRemoved) {
+    When(/^remove balance (-?\d+.\d+) for '(.*)' user (true|false)$/, async function (amount, username, isRemoved) {
         let user = await userData.getUserDataByUsername(username);
         await balanceActions.removeBalance(user, amount, isRemoved);
     });

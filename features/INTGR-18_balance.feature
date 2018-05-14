@@ -28,7 +28,7 @@ Feature: Balance tests
 			| balance  | 30.00  |
 			| amount   | 0.00   |
 			| rollover | 0.00   |
-		When remove balance 30 for '<username>' user true
+		When remove balance 30.00 for '<username>' user true
 		Then account info have the corresponding data for '<username>' user
 			| name     | amount |
 			| balance  | 0.00   |
@@ -53,7 +53,7 @@ Feature: Balance tests
 			| balance  | 30.00  |
 			| amount   | 0.00   |
 			| rollover | 0.00   |
-		When remove balance 60 for '<username>' user false
+		When remove balance 60.00 for '<username>' user false
 		Then account info have the corresponding data for '<username>' user
 			| name     | amount |
 			| balance  | 30.00  |
@@ -95,7 +95,48 @@ Feature: Balance tests
 			| BCXTIMRUBTEST |
 			| BCXTIMEURTEST |
 
-		#balance less than 0
+	@INTGR-18 @BUG_CA-7
+	Scenario Outline: INTGR-18_5 Add balance amount less than 0
+		Given get account info for '<username>' user
+		And account info have the corresponding data for '<username>' user
+			| name     | amount |
+			| balance  | 0.00   |
+			| amount   | 0.00   |
+			| rollover | 0.00   |
+		When add amount -30.13 balance for '<username>' user
+		Then account info have the corresponding data for '<username>' user
+			| name     | amount |
+			| balance  | 0.00   |
+			| amount   | 0.00   |
+			| rollover | 0.00   |
+		Examples:
+			| username      |
+			| BCXTIMRUBTEST |
+			| BCXTIMEURTEST |
 
+	@INTGR-18 @BUG_CA-8
+	Scenario Outline: INTGR-18_6 Remove balance amount less than 0
+		Given get account info for '<username>' user
+		And account info have the corresponding data for '<username>' user
+			| name     | amount |
+			| balance  | 0.00   |
+			| amount   | 0.00   |
+			| rollover | 0.00   |
+		And add amount 30.13 balance for '<username>' user
+		And account info have the corresponding data for '<username>' user
+			| name     | amount |
+			| balance  | 30.13  |
+			| amount   | 0.00   |
+			| rollover | 0.00   |
+		When remove balance -10.00 for '<username>' user false
+		Then account info have the corresponding data for '<username>' user
+			| name     | amount |
+			| balance  | 30.13  |
+			| amount   | 0.00   |
+			| rollover | 0.00   |
+		Examples:
+			| username      |
+			| BCXTIMRUBTEST |
+			| BCXTIMEURTEST |
 
 
