@@ -2,7 +2,7 @@
 Feature: Bonus tests
 
 	@INTGR-19
-	Scenario Outline: Basic operations with bonuses
+	Scenario Outline: INTGR-19_1 Basic operations with bonuses
 		Given get account info for '<username>' user
 		And account info have the corresponding data for '<username>' user
 			| name     | amount |
@@ -29,7 +29,7 @@ Feature: Bonus tests
 			| BCXTIMEURTEST |
 
 	@INTGR-19 @BUG_CA-5
-	Scenario Outline: Add bonus with data less than 0
+	Scenario Outline: INTGR-19_2 Add bonus with data less than 0
 		Given get account info for '<username>' user
 		And account info have the corresponding data for '<username>' user
 			| name     | amount |
@@ -56,7 +56,7 @@ Feature: Bonus tests
 			| BCXTIMEURTEST | 10.05        | -10   |
 
 	@INTGR-19 @BUG_CA-6
-	Scenario Outline: Add bonus with non existing status
+	Scenario Outline: INTGR-19_3 Add bonus with non existing status
 		Given get account info for '<username>' user
 		And account info have the corresponding data for '<username>' user
 			| name     | amount |
