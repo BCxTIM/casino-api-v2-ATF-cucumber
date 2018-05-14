@@ -15,6 +15,10 @@ defineSupportCode(function ({Given, Then, When}) {
         account = await accountActions.getAccountInfoByUser(user);
     });
 
+    Then(/^try to get account info by (.*) for (.*) (true|false)$/, async function(field, username, isSuccess) {
+        account = await accountActions.tryToGetAccountInfo(field, username, isSuccess);
+    });
+
     Then(/^account info have the corresponding data for '(.*)' user$/, async function (username, data) {
         let user = await userData.getUserDataByUsername(username);
         account  = await accountActions.getAccountInfoByUser(user);
