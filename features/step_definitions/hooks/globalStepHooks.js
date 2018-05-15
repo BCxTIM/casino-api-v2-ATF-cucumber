@@ -8,13 +8,16 @@ defineSupportCode(function ({After}) {
 
     After(async function () {
         userData.getAllUsernames().forEach(async function (username) {
-            let user  = await userData.getUserDataByUsername(username);
-            let bonus = await bonusActions.getBonusByStatusAndUser('active', user);
-            if (bonus.length > 0) {
-                await bonusActions.updateStatusBonus(bonus[0], 'canceled');
+            if (username.includes("BCX")) {
+                let user  = await userData.getUserDataByName(username);
+                let bonus = await bonusActions.getBonusByStatusAndUser('active', user);
+                if (bonus.length > 0) {
+                    await bonusActions.updateStatusBonus(bonus[0], 'canceled');
+                }
+                await balanceActions.removeAllBalance(user);
             }
-            await balanceActions.removeAllBalance(user);
-        })
 
+        })
     });
+
 });

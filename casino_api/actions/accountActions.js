@@ -1,33 +1,14 @@
 const requestActions = require('../requestActions');
 module.exports       = {
 
-    getAccountInfoByUser: async function (user) {
+    getAccountInfoByUser: async function (user, field) {
         let req = {
-            "value"    : user.username,
-            "search_by": "login"
+            "value"    : user.value.toString(),
+            "search_by": field
         };
 
         let url                       = "/gateway/v2/account/info";
-        let {body: {result: account}} = await requestActions.send(req, url).expect(200);
+        return await requestActions.send(req, url);
 
-        return account;
     },
-
-    tryToGetAccountInfo: async function (field, username, isSuccess) {
-            let req = {
-                "value"    : username,
-                "search_by": field
-            };
-
-            let url                       = "/gateway/v2/account/info";
-            if(isSuccess.includes("true")) {
-                await requestActions.send(req, url).expect(200);
-
-            } else {
-                let {body: response} = await requestActions.send(req, url).expect(400);
-                response.errors[0].code.should.equal(5002);
-                response.errors[0].message.should.equal("Account not found!");
-            }
-
-        }
 };

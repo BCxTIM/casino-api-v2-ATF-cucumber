@@ -1,5 +1,6 @@
 const requestActions     = require('../requestActions');
 const accountActions     = require('./accountActions');
+const validationActions  = require('./validationActions');
 const timestampGenerator = require('../../utils/timestampGenerator');
 const should             = require("should");
 
@@ -8,14 +9,13 @@ module.exports = {
 
         let url = "/gateway/v2/payment/add_bonus";
 
-        let amount       = parseFloat(data.rowsHash().amount);
-        let wager        = data.rowsHash().wager;
-        let status       = data.rowsHash().status;
-        let responseCode = data.rowsHash().response_code;
-        let expire       = await timestampGenerator.getTimestamp(data.rowsHash().timestamp, data.rowsHash().format);
+        let amount     = parseFloat(data.rowsHash().amount);
+        let wager      = data.rowsHash().wager;
+        let status     = data.rowsHash().status;
+        let expire     = await timestampGenerator.getTimestamp(data.rowsHash().timestamp, data.rowsHash().format);
 
         let req = {
-            "value"          : user.username,
+            "value"          : user.value,
             "amount"         : amount,
             "wager"          : wager,
             "status"         : status,
@@ -29,42 +29,13 @@ module.exports = {
             "search_by"      : "login"
         };
 
-        let {body: result} = await requestActions.send(JSON.stringify(req), url).expect(parseInt(responseCode));
-        await this.validateResponseAfterAddingBonus(result, data);
+        let result = await requestActions.send(JSON.stringify(req), url);
+        await validationActions.validateResponseAfterAddingBonus(result, data);
+        return result;
 
     },
 
-    validateResponseAfterAddingBonus: async function (result, data) {
-        let responseCode = await data.rowsHash().response_code;
-        let amount       = parseFloat(data.rowsHash().amount);
-        let wager        = data.rowsHash().wager;
 
-
-        if (parseInt(responseCode) === 200) {
-            let {result: response} = await result;
-
-            response.bonus.rules.wager.should.equal(wager);
-            response.bonus.rules.amount.should.equal(amount);
-
-            response.bonus.data.amount.should.equal(amount);
-
-            response.bonus.data.rollover.should.equal(amount * wager);
-            response.bonus.data.rollover_init.should.equal(amount * wager);
-        } else {
-            let {errors: response} = await result;
-            if (amount < 0) {
-                response[0].code.should.equal(5005);
-                response[0].message.should.equal('Account can\'t be less then zero!');
-                //TODO should be Amount in message
-            }
-            if (wager < 0) {
-                response[0].code.should.equal(5005);
-                response[0].message.should.equal('Wager can\'t be less then zero!');
-            }
-        }
-
-
-    },
 
     getBonusByStatusAndUser: async function (status, user) {
         let start = await timestampGenerator.getTimestamp('now', 'YYYY-MM-DD');
@@ -73,7 +44,7 @@ module.exports = {
         let url = "/gateway/v2/payment/bonus_list";
 
         let req = {
-            "login" : user.username,
+            "login" : user.value,
             "status": status,
             "start" : start,
             "end"   : end
@@ -98,4 +69,15 @@ module.exports = {
         response.bonus.status.should.equal(status);
 
     },
+
+    updateBonusWithError: async function (bonusId, status) {
+        let url = "/gateway/v2/payment/update_bonus";
+
+        let req = {
+            "bonus_id": bonusId,
+            "status"  : status
+        };
+        return await requestActions.send(req, url);
+    },
+
 };
