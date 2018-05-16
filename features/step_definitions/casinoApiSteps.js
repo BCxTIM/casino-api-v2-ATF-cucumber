@@ -3,7 +3,7 @@ const accountActions      = require('../../casino_api/actions/accountActions');
 const balanceActions      = require('../../casino_api/actions/balanceActions');
 const bonusActions        = require('../../casino_api/actions/bonusActions');
 const validationActions   = require('../../casino_api/actions/validationActions');
-const should              = require('should');
+const shouldEqual         = require('../../utils/soft2BetAssert').shouldEqual;
 const {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function ({Given, Then, When}) {
@@ -82,5 +82,6 @@ defineSupportCode(function ({Given, Then, When}) {
 
         await validationActions.validateExpectedResultFromResponse(expectedResult, data);
     });
+
 
 });

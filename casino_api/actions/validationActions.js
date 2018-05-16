@@ -1,13 +1,18 @@
+const util        = require('util');
+const shouldEqual = require('../../utils/soft2BetAssert').shouldEqual;
+const deepEqual   = require('../../utils/soft2BetAssert').deepEqual;
+
 module.exports = {
 
     validateExpectedResultFromResponse: async function (expectedResult, data) {
-        await data.rows().should.deepEqual(expectedResult);
+        await deepEqual(util.format("Expected data [%s] is as actual data", expectedResult, data.rows()), expectedResult, data.rows());
     },
 
     validateResponseAfterAddingBonus: async function (result, data) {
 
         let statusCode = data.rowsHash().statusCode;
-        result.statusCode.should.equal(parseInt(statusCode));
+        shouldEqual(util.format("Response status code [%s] should equal [%s]", result.statusCode, statusCode), result.statusCode, parseInt(statusCode));
+
 
         if (result.statusCode === 200) {
             let response = result.body.result;
@@ -15,13 +20,14 @@ module.exports = {
             let amount = parseFloat(data.rowsHash().amount);
             let wager  = data.rowsHash().wager;
 
-            response.bonus.rules.wager.should.equal(wager);
-            response.bonus.rules.amount.should.equal(amount);
+            shouldEqual(util.format("Response bonus wager [%s] should equal [%s]", response.bonus.rules.wager, wager), response.bonus.rules.wager, wager);
+            shouldEqual(util.format("Response bonus amount [%s] should equal [%s]", response.bonus.rules.amount, amount), response.bonus.rules.amount, amount);
+            shouldEqual(util.format("Response bonus data amount [%s] should equal [%s]", response.bonus.data.amount, amount), response.bonus.data.amount, amount);
+            shouldEqual(util.format("Response bonus data rollover [%s] should equal [%s]", response.bonus.data.rollover, (amount * wager)),
+                response.bonus.data.rollover, (amount * wager));
+            shouldEqual(util.format("Response bonus data rollover init [%s] should equal [%s]", response.bonus.data.rollover_init, (amount * wager)),
+                response.bonus.data.rollover_init, (amount * wager));
 
-            response.bonus.data.amount.should.equal(amount);
-
-            response.bonus.data.rollover.should.equal(amount * wager);
-            response.bonus.data.rollover_init.should.equal(amount * wager);
 
         }
     },
