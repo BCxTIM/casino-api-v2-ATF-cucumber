@@ -1,4 +1,4 @@
-@Smoke
+#@Smoke
 Feature: Account tests
 
 	@INTGR-29
@@ -25,6 +25,6 @@ Feature: Account tests
 			| code       | 5002               |
 			| message    | Account not found! |
 		Examples:
-			| field      | value           |
-			| login      | NON_EXISTING_USER  |
-			| account_id | 100454600000000 |
+			| field      | value             |
+			| login      | NON_EXISTING_USER |
+			| account_id | 100454600000001   |

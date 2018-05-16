@@ -1,7 +1,7 @@
 const userData            = require('../../fixtures/userData');
 const accountActions      = require('../../casino_api/actions/accountActions');
 const balanceActions      = require('../../casino_api/actions/balanceActions');
-const bonusctions         = require('../../casino_api/actions/bonusActions');
+const bonusActions         = require('../../casino_api/actions/bonusActions');
 const validationActions   = require('../../casino_api/actions/validationActions');
 const should              = require('should');
 const {defineSupportCode} = require('cucumber');
@@ -46,26 +46,26 @@ defineSupportCode(function ({Given, Then, When}) {
 
     Given(/^add bonus for '(.*)' user with bellow data$/, async function (username, data) {
         let user = await userData.getUserDataByName(username);
-        response = await bonusctions.addBonus(user, data);
+        response = await bonusActions.addBonus(user, data);
     });
 
     When(/^get '(.*)' bonus from bonus list for '(.*)' user$/, async function (status, username) {
         let user = await userData.getUserDataByName(username);
-        bonus    = await bonusctions.getBonusByStatusAndUser(status, user);
+        bonus    = await bonusActions.getBonusByStatusAndUser(status, user);
     });
 
     When(/^update '(.*)' bonus with new status '(.*)' for '(.*)' user$/, async function (existingStatus, expectedStatus, username) {
         let user = await userData.getUserDataByName(username);
-        bonus    = await bonusctions.getBonusByStatusAndUser(existingStatus, user);
-        await bonusctions.updateStatusBonus(bonus[0], expectedStatus);
+        bonus    = await bonusActions.getBonusByStatusAndUser(existingStatus, user);
+        await bonusActions.updateStatusBonus(bonus[0], expectedStatus);
     });
 
     When(/^update not exisging bonus by id (\d+) to '(.*)'$/, async function (bonusId, status) {
-        response = await bonusctions.updateBonusWithError(bonusId, status);
+        response = await bonusActions.updateBonusWithError(bonusId, status);
     });
 
     When(/^update exisging bonus by id (\d+) to not valid '(.*)' status$/, async function (bonusId, status) {
-        response = await bonusctions.updateBonusWithError(bonusId, status);
+        response = await bonusActions.updateBonusWithError(bonusId, status);
     });
 
     Then(/^get corresponding response error code and message$/, async function (data) {

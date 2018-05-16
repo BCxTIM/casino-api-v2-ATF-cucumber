@@ -56,7 +56,7 @@ module.exports = {
 
     updateStatusBonus: async function (bonus, status) {
         let url      = "/gateway/v2/payment/update_bonus";
-        let bonus_id = bonus.bonus_id;
+        let bonus_id = await bonus.bonus_id;
 
         let req = {
             "bonus_id": bonus_id,

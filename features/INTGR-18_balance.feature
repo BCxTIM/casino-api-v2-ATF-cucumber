@@ -138,31 +138,38 @@ Feature: Balance tests
 			| BCXTIMRUBTEST |
 			| BCXTIMEURTEST |
 
-	@INTGR-18 @BUG_CA-8
-	Scenario Outline: INTGR-18_6 Remove balance amount less than 0
-		Given get valid account info for '<username>' user by 'login'
-		And account info have the corresponding data for user
-			| field      | value |
-			| statusCode | 200   |
-			| balance    | 0.00  |
-			| amount     | 0.00  |
-			| rollover   | 0.00  |
-		When remove balance -60.00 for '<username>' user
-		Then get corresponding response error code and message
-			| field      | value                           |
-			| statusCode | 400                             |
-			| code       | 5005                            |
-			| message    | Amount can't be less then zero! |
-		And get valid account info for '<username>' user by 'login'
-		And account info have the corresponding data for user
-			| field      | value |
-			| statusCode | 200   |
-			| balance    | 0.00  |
-			| amount     | 0.00  |
-			| rollover   | 0.00  |
-		Examples:
-			| username      |
-			| BCXTIMRUBTEST |
-			| BCXTIMEURTEST |
+#	@INTGR-18 @BUG_CA-8
+#	Scenario Outline: INTGR-18_6 Remove balance amount less than 0
+#		Given get valid account info for '<username>' user by 'login'
+#		And account info have the corresponding data for user
+#			| field      | value |
+#			| statusCode | 200   |
+#			| balance    | 0.00  |
+#			| amount     | 0.00  |
+#			| rollover   | 0.00  |
+#		When remove balance -60.00 for '<username>' user
+#		Then get corresponding response error code and message
+#			| field      | value                           |
+#			| statusCode | 400                             |
+#			| code       | 5005                            |
+#			| message    | Amount can't be less then zero! |
+#		And get valid account info for '<username>' user by 'login'
+#		And account info have the corresponding data for user
+#			| field      | value |
+#			| statusCode | 200   |
+#			| balance    | 0.00  |
+#			| amount     | 0.00  |
+#			| rollover   | 0.00  |
+#		When remove balance 60.00 for '<username>' user
+#		And account info have the corresponding data for user
+#			| field      | value |
+#			| statusCode | 200   |
+#			| balance    | 0.00  |
+#			| amount     | 0.00  |
+#			| rollover   | 0.00  |
+#		Examples:
+#			| username      |
+#			| BCXTIMRUBTEST |
+#			| BCXTIMEURTEST |
 
 
