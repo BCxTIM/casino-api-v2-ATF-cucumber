@@ -9,10 +9,10 @@ module.exports = {
 
         let url = "/gateway/v2/payment/add_bonus";
 
-        let amount     = parseFloat(data.rowsHash().amount);
-        let wager      = data.rowsHash().wager;
-        let status     = data.rowsHash().status;
-        let expire     = await timestampGenerator.getTimestamp(data.rowsHash().timestamp, data.rowsHash().format);
+        let amount = parseFloat(data.rowsHash().amount);
+        let wager  = data.rowsHash().wager;
+        let status = data.rowsHash().status;
+        let expire = await timestampGenerator.getTimestamp(data.rowsHash().timestamp, data.rowsHash().format);
 
         let req = {
             "value"          : user.value,
@@ -35,6 +35,36 @@ module.exports = {
 
     },
 
+    addFreeespin: async function (user, data) {
+
+        let url = "/gateway/v2/payment/add_bonus";
+
+        let amount = parseFloat(data.rowsHash().amount);
+        let wager  = data.rowsHash().wager;
+        let status = data.rowsHash().status;
+        let expire = await timestampGenerator.getTimestamp(data.rowsHash().timestamp, data.rowsHash().format);
+
+        let req = {
+            "value"          : user.value,
+            "amount"         : amount,
+            "wager"          : wager,
+            "status"         : status,
+            "name"           : "No deposit bonus",
+            "expire"         : expire,
+            "type"           : "freespin",
+            "game_id"        : 12172,
+            "provider"       : null,
+            "bonus_game_code": "",
+            "bonusplanid"    : null,
+            "deposit_amount" : 0,
+            "search_by"      : "login"
+        };
+
+        let result = await requestActions.send(JSON.stringify(req), url);
+        await validationActions.validateResponseAfterAddingBonus(result, data);
+        return result;
+
+    },
 
 
     getBonusByStatusAndUser: async function (status, user) {

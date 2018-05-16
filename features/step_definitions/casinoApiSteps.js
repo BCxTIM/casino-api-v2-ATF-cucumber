@@ -1,7 +1,7 @@
 const userData            = require('../../fixtures/userData');
 const accountActions      = require('../../casino_api/actions/accountActions');
 const balanceActions      = require('../../casino_api/actions/balanceActions');
-const bonusActions         = require('../../casino_api/actions/bonusActions');
+const bonusActions        = require('../../casino_api/actions/bonusActions');
 const validationActions   = require('../../casino_api/actions/validationActions');
 const should              = require('should');
 const {defineSupportCode} = require('cucumber');
@@ -24,6 +24,7 @@ defineSupportCode(function ({Given, Then, When}) {
             ['balance', response.body.result.balance],
             ['amount', response.body.result.bonus.amount],
             ['rollover', response.body.result.bonus.rollover],
+            ['freespins', response.body.result.freespins],
         ];
 
         await validationActions.validateExpectedResultFromResponse(expectedResult, data);
@@ -44,9 +45,13 @@ defineSupportCode(function ({Given, Then, When}) {
         await balanceActions.removeAllBalance(user);
     });
 
-    Given(/^add bonus for '(.*)' user with bellow data$/, async function (username, data) {
+    Given(/^add (freespin|bonus) for '(.*)' user with bellow data$/, async function (type, username, data) {
         let user = await userData.getUserDataByName(username);
-        response = await bonusActions.addBonus(user, data);
+        if (type.includes("freespin")) {
+            response = await bonusActions.addFreeespin(user, data);
+        } else {
+            response = await bonusActions.addBonus(user, data);
+        }
     });
 
     When(/^get '(.*)' bonus from bonus list for '(.*)' user$/, async function (status, username) {
