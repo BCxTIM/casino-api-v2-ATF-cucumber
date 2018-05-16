@@ -1,6 +1,7 @@
 const requestActions = require('../requestActions');
 const accountActions = require('./accountActions');
-const should         = require("should");
+const shouldEqual    = require('../../utils/soft2BetAssert').shouldEqual;
+const util           = require('util');
 
 module.exports = {
 
@@ -42,7 +43,7 @@ module.exports = {
         };
 
         let {body: {result: response}} = await requestActions.send(req, url).expect(200);
-        parseInt(response.balance).should.equal(0);
+        shouldEqual(util.format("All balance for [%s] user is removed", user.value), parseInt(response.balance), 0);
     },
 
 };

@@ -2,7 +2,9 @@ const requestActions     = require('../requestActions');
 const accountActions     = require('./accountActions');
 const validationActions  = require('./validationActions');
 const timestampGenerator = require('../../utils/timestampGenerator');
-const should             = require("should");
+const shouldEqual        = require('../../utils/soft2BetAssert').shouldEqual;
+const util               = require('util');
+
 
 module.exports = {
     addBonus: async function (user, data) {
@@ -95,8 +97,9 @@ module.exports = {
 
         let {body: {result: response}} = await requestActions.send(req, url).expect(200);
 
-        response.bonus.bonus_id.should.equal(bonus_id);
-        response.bonus.status.should.equal(status);
+        shouldEqual(util.format('Response bonus id [%s] is equal to [%s]', response.bonus.bonus_id, bonus_id), response.bonus.bonus_id, bonus_id);
+        shouldEqual(util.format('Response bonus status [%s] is equal to [%s]', response.bonus.status, status), response.bonus.status, status);
+
 
     },
 
