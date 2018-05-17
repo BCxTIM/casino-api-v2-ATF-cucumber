@@ -3,6 +3,9 @@ const accountActions = require('./accountActions');
 const shouldEqual    = require('../../utils/soft2BetAssert').shouldEqual;
 const util           = require('util');
 
+const log4js = require('log4js');
+const logger = log4js.getLogger();
+
 module.exports = {
 
     addBalance: async function (user, amount) {
@@ -14,7 +17,12 @@ module.exports = {
             "search_by": "login"
         };
 
-        return await requestActions.send(req, url);
+        let response = await requestActions.send(req, url);
+
+        logger.debug("Response HTTP Status Code: " + response.statusCode);
+        logger.debug("Response Body: " + JSON.stringify(response.body));
+
+        return response;
     },
 
     removeBalance: async function (user, amount) {
@@ -26,7 +34,12 @@ module.exports = {
             "search_by": "login"
         };
 
-        return await requestActions.send(req, url);
+        let response = await requestActions.send(req, url);
+
+        logger.debug("Response HTTP Status Code: " + response.statusCode);
+        logger.debug("Response Body: " + JSON.stringify(response.body));
+
+        return response;
 
     },
 

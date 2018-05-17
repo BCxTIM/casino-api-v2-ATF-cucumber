@@ -5,6 +5,9 @@ const timestampGenerator = require('../../utils/timestampGenerator');
 const shouldEqual        = require('../../utils/soft2BetAssert').shouldEqual;
 const util               = require('util');
 
+const log4js = require('log4js');
+const logger = log4js.getLogger();
+
 
 module.exports = {
     addBonus: async function (user, data) {
@@ -32,6 +35,10 @@ module.exports = {
         };
 
         let result = await requestActions.send(JSON.stringify(req), url);
+
+        logger.debug("Response HTTP Status Code: " + result.statusCode);
+        logger.debug("Response Body: " + JSON.stringify(result.body));
+
         await validationActions.validateResponseAfterAddingBonus(result, data);
         return result;
 
@@ -63,6 +70,10 @@ module.exports = {
         };
 
         let result = await requestActions.send(JSON.stringify(req), url);
+
+        logger.debug("Response HTTP Status Code: " + result.statusCode);
+        logger.debug("Response Body: " + JSON.stringify(result.body));
+
         await validationActions.validateResponseAfterAddingBonus(result, data);
         return result;
 
@@ -82,7 +93,12 @@ module.exports = {
             "end"   : end
         };
 
-        let {body: {result: bonus}} = await requestActions.send(JSON.stringify(req), url).expect(200);
+        let result = await requestActions.send(JSON.stringify(req), url).expect(200);
+
+        logger.debug("Response HTTP Status Code: " + result.statusCode);
+        logger.debug("Response Body: " + JSON.stringify(result.body));
+
+        let {body: {result: bonus}} = result;
         return bonus;
     },
 
@@ -106,11 +122,16 @@ module.exports = {
     updateBonusWithError: async function (bonusId, status) {
         let url = "/gateway/v2/payment/update_bonus";
 
-        let req = {
+        let req    = {
             "bonus_id": bonusId,
             "status"  : status
         };
-        return await requestActions.send(req, url);
+        let result = await requestActions.send(req, url);
+
+        logger.debug("Response HTTP Status Code: " + result.statusCode);
+        logger.debug("Response Body: " + JSON.stringify(result.body));
+
+        return result;
     },
 
 };
