@@ -1,12 +1,13 @@
 const {defineSupportCode} = require('cucumber');
-const bonusActions        = require('../../../casino_api/actions/bonusActions');
-const balanceActions      = require('../../../casino_api/actions/balanceActions');
-const userData            = require('../../../fixtures/userData');
+const bonusActions        = require('../../casino_api/actions/bonusActions');
+const balanceActions      = require('../../casino_api/actions/balanceActions');
+const userData            = require('../../fixtures/userData');
 
 const log4js = require('log4js');
 const logger = log4js.getLogger();
 
-defineSupportCode(function ({Before, After}) {
+defineSupportCode(function ({Before, After, setDefaultTimeout}) {
+    setDefaultTimeout(60 * 1000);
 
     After(async function () {
         logger.debug("Remove balance and bonus");

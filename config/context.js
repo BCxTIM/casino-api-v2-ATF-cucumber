@@ -5,7 +5,7 @@ const log4js = require('log4js');
 
 
 const moment  = require('moment');
-let timestamp = moment().format("YYYY-MM-DD HH:MM:ss");
+let timestamp = moment().format("YYYY-MM-DDTHH:mm:ss");
 
 log4js.configure({
     appenders : {evidience: {type: 'file', filename: 'report/execution' + timestamp + '.log'}},
@@ -18,12 +18,14 @@ logger.level = 'debug';
 
 module.exports = (function () {
     let envUrl     = '';
+    let gameUrl    = '';
     let properties = {};
     let enviroment = process.env.env;
     switch (enviroment) {
         case 'develop':
             properties = PropertiesReader('config/' + enviroment + '.properties');
             envUrl     = properties.get('dev.URL');
+            gameUrl    = properties.get('local.URL');
             break;
         default:
             throw new Error("Please define enviroment [env=develop, ...]");
@@ -32,8 +34,11 @@ module.exports = (function () {
 
     const {get: getProperties} = properties;
     return {
-        getEnvUrl: function () {
+        getEnvUrl : function () {
             return envUrl;
+        },
+        getGameUrl: function () {
+            return gameUrl;
         },
         getProperties,
     }

@@ -1,13 +1,15 @@
-const userData            = require('../../fixtures/userData');
-const accountActions      = require('../../casino_api/actions/accountActions');
-const balanceActions      = require('../../casino_api/actions/balanceActions');
-const bonusActions        = require('../../casino_api/actions/bonusActions');
-const validationActions   = require('../../casino_api/actions/validationActions');
+const userData          = require('../../../fixtures/userData');
+const accountActions    = require('../../../casino_api/actions/accountActions');
+const balanceActions    = require('../../../casino_api/actions/balanceActions');
+const bonusActions      = require('../../../casino_api/actions/bonusActions');
+const validationActions = require('../../../casino_api/actions/validationActions');
+const generationActions = require('../../../utils/generationActions');
+
 const {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function ({Given, Then, When}) {
     let bonus;
-    let response;
+    global.response = {};
 
 
     Given(/^get (valid|invalid) account info for '(.*)' user by '(.*)'$/, async function (isValid, name, field) {
@@ -18,14 +20,7 @@ defineSupportCode(function ({Given, Then, When}) {
 
 
     Then(/^account info have the corresponding data for user$/, async function (data) {
-        let expectedResult = [
-            ['statusCode', response.statusCode.toString()],
-            ['balance', response.body.result.balance],
-            ['amount', response.body.result.bonus.amount],
-            ['rollover', response.body.result.bonus.rollover],
-            ['freespins', response.body.result.freespins],
-        ];
-
+        let expectedResult = await generationActions.generateResponseExpectedData(data);
         await validationActions.validateExpectedResultFromResponse(expectedResult, data);
     });
 
@@ -73,12 +68,12 @@ defineSupportCode(function ({Given, Then, When}) {
     });
 
     Then(/^get corresponding response error code and message$/, async function (data) {
-        let expectedResult = [
-            ['statusCode', response.statusCode.toString()],
-            ['code', response.body.errors[0].code.toString()],
-            ['message', response.body.errors[0].message]
-        ];
+        let expectedResult = await generationActions.generateResponseExpectedData(data);
+        await validationActions.validateExpectedResultFromResponse(expectedResult, data);
+    });
 
+    When(/^corresponding response is$/, async function (data) {
+        let expectedResult = await generationActions.generateResponseExpectedData(data);
         await validationActions.validateExpectedResultFromResponse(expectedResult, data);
     });
 
