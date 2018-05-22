@@ -78,6 +78,64 @@ module.exports = {
 
     },
 
+    betWinAction: async function (user, bet, win, rolloverAllowed) {
+
+        let session_id = await this.getSessionIdByRolloverAllowed(user, rolloverAllowed);
+
+        let bet_action_id = "" + moment().valueOf();
+        let win_action_id = "" + (moment().valueOf() + 1);
+        let round_id      = "" + (moment().valueOf() + 2);
+
+        let betAmount = await parseInt(bet.toString().replace('.', ''));
+        let winAmount = await parseInt(win.toString().replace('.', ''));
+
+
+        return await requestActions.send({
+            "session_id": session_id,
+            "user_id"   : user.value,
+            "currency"  : user.currency,
+            "game"      : "amatic:BookOfAztec",
+            "game_id"   : round_id,
+            "finished"  : true,
+            "actions"   : [
+                {
+                    "action" : "bet",
+                    action_id: bet_action_id,
+                    amount   : betAmount
+
+                }, {
+                    "action" : "win",
+                    action_id: win_action_id,
+                    amount   : winAmount
+                }
+            ]
+
+        });
+    },
+
+    rollbackLastAction: async function (user) {
+        let session_id = await this.getSessionIdByRolloverAllowed(user);
+        let action_id  = await response.body.transactions.pop().action_id;
+
+        return await requestActions.send({
+            "session_id": session_id,
+            "user_id"   : user.value,
+            "currency"  : user.currency,
+            "game"      : "amatic:BookOfAztec",
+            "game_id"   : 1553793770,
+            "finished"  : true,
+            "actions"   : [
+                {
+                    action            : "rollback",
+                    action_id         : action_id + 1,
+                    original_action_id: action_id,
+                }
+            ]
+
+        });
+
+    },
+
     getSessionIdByRolloverAllowed: async function (user, rollover_allowed) {
         let session_id = rollover_allowed;
         if (this.isEmpty(session_id) || this.isEmpty(rolloverPersent[rollover_allowed])) {

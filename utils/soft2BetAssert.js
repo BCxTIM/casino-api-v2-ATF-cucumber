@@ -3,13 +3,13 @@ const log4js = require('log4js');
 const logger = log4js.getLogger();
 
 module.exports = {
-    shouldEqual: async function (message, actualResult, expectedResult) {
+    shouldEqual: function (message, actualResult, expectedResult) {
         logger.debug(message);
-        await should.equal(actualResult, expectedResult, message);
+        should.equal(actualResult, expectedResult, message);
     },
 
-    deepEqual: async function (message, actualResult, expectedResult) {
+    deepEqual: function (message, actualResult, expectedResult) {
         logger.debug(message);
-        await should.deepEqual(actualResult, expectedResult, message);
+        should.deepEqual(actualResult, expectedResult, message);
     }
 };

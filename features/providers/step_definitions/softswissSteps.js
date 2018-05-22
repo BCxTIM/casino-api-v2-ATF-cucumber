@@ -30,9 +30,12 @@ defineSupportCode(function ({Given, Then, When}) {
 
     When(/^user '(.*)' bet (\d+.\d+) and win (\d+.\d+) amount with rollover allowed (\d+)%$/, async function (name, bet, win, rolloverAllowed) {
         let user = await userData.getUserDataByName(name);
-
-        //TODO
+        response = await softswissActions.betWinAction(user, bet, win, rolloverAllowed);
 
     });
 
+    When(/^system rollback last action for '(.*)' user$/, async function (name) {
+        let user = await userData.getUserDataByName(name);
+        response = await softswissActions.rollbackLastAction(user);
+    });
 });

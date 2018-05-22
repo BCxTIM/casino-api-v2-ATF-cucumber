@@ -13,7 +13,7 @@ defineSupportCode(function ({Before, After, setDefaultTimeout}) {
 
     After(async function () {
         logger.debug("Remove balance and bonus");
-        userData.getAllUsernames().forEach(async function (username) {
+        await Promise.all(userData.getAllUsernames().map(async function (username) {
             if (username.includes("BCX")) {
                 let user  = await userData.getUserDataByName(username);
                 let bonus = await bonusActions.getBonusByStatusAndUser('active', user);
@@ -23,7 +23,7 @@ defineSupportCode(function ({Before, After, setDefaultTimeout}) {
                 await balanceActions.removeAllBalance(user);
             }
 
-        })
+        }));
     });
 
     Before(async function (scenario) {
@@ -32,6 +32,7 @@ defineSupportCode(function ({Before, After, setDefaultTimeout}) {
         };
 
         logger.info("Scenario name: " + scenario.pickle.name);
+        console.log("\nScenario name: " + scenario.pickle.name);
 
         scenario.pickle.steps.forEach(function (step) {
             logger.info("Step name: " + step.text);

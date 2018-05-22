@@ -55,13 +55,9 @@ module.exports = {
             "search_by": "login"
         };
 
-        let {body: {result: result}} = await requestActions.send(req, url).expect(200);
+        let result = await requestActions.send(req, url).expect(200);
 
-        try {
-            await shouldEqual(util.format("All balance for [%s] user is removed", user.value), parseInt(result.balance), 0);
-        } catch (e) {
-
-        }
-    },
+        await shouldEqual(util.format("All balance for [%s] user is removed", user.value), parseInt(result.body.result.balance), 0);
+    }
 
 };
