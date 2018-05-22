@@ -25,6 +25,9 @@ Feature: Balance tests
 			| body.result.bonus.rollover | 0.00 |
 			| body.result.freespins      | 0.00 |
 		When add amount 30.00 balance for '<username>' user
+		Then corresponding response is
+			| statusCode          | 200   |
+			| body.result.balance | 30.00 |
 		And get valid account info for '<username>' user by 'login'
 		Then account info have the corresponding data for user
 			| statusCode                 | 200   |
@@ -33,8 +36,11 @@ Feature: Balance tests
 			| body.result.bonus.rollover | 0.00  |
 			| body.result.freespins      | 0.00  |
 		When remove balance 30.00 for '<username>' user
+		Then corresponding response is
+			| statusCode          | 200  |
+			| body.result.balance | 0.00 |
 		And get valid account info for '<username>' user by 'login'
-		Then account info have the corresponding data for user
+		And account info have the corresponding data for user
 			| statusCode                 | 200  |
 			| body.result.balance        | 0.00 |
 			| body.result.bonus.amount   | 0.00 |
@@ -56,7 +62,7 @@ Feature: Balance tests
 			| body.result.freespins      | 0.00 |
 		When add amount 30.00 balance for '<username>' user
 		And get valid account info for '<username>' user by 'login'
-		Then account info have the corresponding data for user
+		And account info have the corresponding data for user
 			| statusCode                 | 200   |
 			| body.result.balance        | 30.00 |
 			| body.result.bonus.amount   | 0.00  |

@@ -17,12 +17,12 @@ module.exports = {
             "search_by": "login"
         };
 
-        let response = await requestActions.send(req, url);
+        let result = await requestActions.send(req, url);
 
-        logger.debug("Response HTTP Status Code: " + response.statusCode);
-        logger.debug("Response Body: " + JSON.stringify(response.body));
+        logger.debug("Response HTTP Status Code: " + result.statusCode);
+        logger.debug("Response Body: " + JSON.stringify(result.body));
 
-        return response;
+        return result;
     },
 
     removeBalance: async function (user, amount) {
@@ -34,12 +34,12 @@ module.exports = {
             "search_by": "login"
         };
 
-        let response = await requestActions.send(req, url);
+        let result = await requestActions.send(req, url);
 
-        logger.debug("Response HTTP Status Code: " + response.statusCode);
-        logger.debug("Response Body: " + JSON.stringify(response.body));
+        logger.debug("Response HTTP Status Code: " + result.statusCode);
+        logger.debug("Response Body: " + JSON.stringify(result.body));
 
-        return response;
+        return result;
 
     },
 
@@ -55,8 +55,13 @@ module.exports = {
             "search_by": "login"
         };
 
-        let {body: {result: response}} = await requestActions.send(req, url).expect(200);
-        shouldEqual(util.format("All balance for [%s] user is removed", user.value), parseInt(response.balance), 0);
+        let {body: {result: result}} = await requestActions.send(req, url).expect(200);
+
+        try {
+            await shouldEqual(util.format("All balance for [%s] user is removed", user.value), parseInt(result.balance), 0);
+        } catch (e) {
+
+        }
     },
 
 };

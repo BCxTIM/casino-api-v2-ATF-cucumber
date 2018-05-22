@@ -111,10 +111,10 @@ module.exports = {
             "status"  : status
         };
 
-        let {body: {result: response}} = await requestActions.send(req, url).expect(200);
+        let {body: {result: result}} = await requestActions.send(req, url).expect(200);
 
-        shouldEqual(util.format('Response bonus id [%s] is equal to [%s]', response.bonus.bonus_id, bonus_id), response.bonus.bonus_id, bonus_id);
-        shouldEqual(util.format('Response bonus status [%s] is equal to [%s]', response.bonus.status, status), response.bonus.status, status);
+        await shouldEqual(util.format('Response bonus id [%s] is equal to [%s]', result.bonus.bonus_id, bonus_id), result.bonus.bonus_id, bonus_id);
+        await shouldEqual(util.format('Response bonus status [%s] is equal to [%s]', result.bonus.status, status), result.bonus.status, status);
 
 
     },

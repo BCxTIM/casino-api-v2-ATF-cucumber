@@ -5,7 +5,7 @@ const deepEqual   = require('../../utils/soft2BetAssert').deepEqual;
 module.exports = {
 
     validateExpectedResultFromResponse: async function (expectedResult, data) {
-        await deepEqual(util.format("Expected data [%s] is as actual data", expectedResult.toString(), data.rowsHash().toString()), expectedResult, data.rowsHash());
+        await deepEqual(util.format("Expected data [%s] is as actual data", JSON.stringify(expectedResult), JSON.stringify(data.rowsHash())), expectedResult, data.rowsHash());
     },
 
     validateResponseAfterAddingBonus: async function (result, data) {
@@ -31,4 +31,8 @@ module.exports = {
 
         }
     },
+
+    sizeReponseIs: async function (type, size) {
+        await shouldEqual(type + " size is " + size, response.length, size);
+    }
 };

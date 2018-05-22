@@ -57,7 +57,7 @@ Feature: Softswiss tests
 			| body.code    | 100                                              |
 			| body.message | Player has not enough funds to process an action |
 
-		@TODO
+	@Todo
 	Scenario: Bet and win
 		Given get valid account info for 'BCXTIMRUBTEST' user by 'login'
 		And account info have the corresponding data for user

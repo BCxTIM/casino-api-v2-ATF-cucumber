@@ -9,7 +9,6 @@ const {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function ({Given, Then, When}) {
     let bonus;
-    global.response = {};
 
 
     Given(/^get (valid|invalid) account info for '(.*)' user by '(.*)'$/, async function (isValid, name, field) {
@@ -27,6 +26,7 @@ defineSupportCode(function ({Given, Then, When}) {
     When(/^add amount (-?\d+.\d+) balance for '(.*)' user$/, async function (amount, username) {
         let user = await userData.getUserDataByName(username);
         response = await balanceActions.addBalance(user, amount);
+
     });
 
     When(/^remove balance (-?\d+.\d+) for '(.*)' user$/, async function (amount, username) {
@@ -50,7 +50,7 @@ defineSupportCode(function ({Given, Then, When}) {
 
     When(/^get '(.*)' bonus from bonus list for '(.*)' user$/, async function (status, username) {
         let user = await userData.getUserDataByName(username);
-        bonus    = await bonusActions.getBonusByStatusAndUser(status, user);
+        response = await bonusActions.getBonusByStatusAndUser(status, user);
     });
 
     When(/^update '(.*)' bonus with new status '(.*)' for '(.*)' user$/, async function (existingStatus, expectedStatus, username) {
@@ -78,4 +78,7 @@ defineSupportCode(function ({Given, Then, When}) {
     });
 
 
+    Given(/^(bonus|response|freespin) size is (\d+)$/, async function (type, size) {
+        await validationActions.sizeReponseIs(type, size);
+    });
 });

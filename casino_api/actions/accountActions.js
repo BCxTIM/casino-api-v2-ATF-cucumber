@@ -11,13 +11,13 @@ module.exports = {
             "search_by": field
         };
 
-        let url      = "/gateway/v2/account/info";
-        let response = await requestActions.send(req, url);
+        let url    = "/gateway/v2/account/info";
+        let result = await requestActions.send(req, url);
 
-        logger.debug("Response HTTP Status Code: " + response.statusCode);
-        logger.debug("Response Body: " + JSON.stringify(response.body));
+        logger.debug("Response HTTP Status Code: " + result.statusCode);
+        logger.debug("Response Body: " + JSON.stringify(result.body));
 
-        return response;
+        return result;
 
     },
 };

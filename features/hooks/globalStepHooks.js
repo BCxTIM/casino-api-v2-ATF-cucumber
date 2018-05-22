@@ -9,6 +9,8 @@ const logger = log4js.getLogger();
 defineSupportCode(function ({Before, After, setDefaultTimeout}) {
     setDefaultTimeout(60 * 1000);
 
+    global.response = {};
+
     After(async function () {
         logger.debug("Remove balance and bonus");
         userData.getAllUsernames().forEach(async function (username) {
