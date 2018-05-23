@@ -44,7 +44,7 @@ module.exports = {
 
 
     betAction: async function (user, amount, rolloverAllowed) {
-        let session_id = await this.getSessionIdByRolloverAllowed(user, rolloverAllowed);
+        let session_id = await getSessionIdByRolloverAllowed(user, rolloverAllowed);
         let betAmount  = await Utils.convertDoubleToCents(amount);
 
         let action_id = "" + moment().valueOf();
@@ -71,7 +71,7 @@ module.exports = {
 
     betWinAction: async function (user, bet, win, rolloverAllowed) {
 
-        let session_id = await this.getSessionIdByRolloverAllowed(user, rolloverAllowed);
+        let session_id = await getSessionIdByRolloverAllowed(user, rolloverAllowed);
 
         let bet_action_id = "" + moment().valueOf();
         let win_action_id = "" + (moment().valueOf() + 1);
@@ -105,7 +105,7 @@ module.exports = {
     },
 
     rollbackLastAction: async function (user) {
-        let session_id = await this.getSessionIdByRolloverAllowed(user);
+        let session_id = await getSessionIdByRolloverAllowed(user);
         let action_id  = await response.body.transactions.pop().action_id;
 
         return await requestActions.send({
@@ -128,7 +128,7 @@ module.exports = {
     },
 
     winForLastBet: async function (user, amount) {
-        let session_id = await this.getSessionIdByRolloverAllowed(user);
+        let session_id = await getSessionIdByRolloverAllowed(user);
 
         let action_id = "" + moment().valueOf();
         let winAmount = await Utils.convertDoubleToCents(amount);
@@ -153,29 +153,28 @@ module.exports = {
 
     },
 
-    getPlayerBalance: async function (userData, rolloverAllowed) {
-        let session_id   = await this.getSessionIdByRolloverAllowed(userData, rolloverAllowed);
-        let {body: user} = await requestActions.send({session_id: session_id}).expect(200);
-        return user;
-    },
-
     playerBalanceForRolloverAllowedIsFollowing: async function (userData, rolloverAllowed, balance) {
-
-        let user = await this.getPlayerBalance(userData, rolloverAllowed);
+        let user = await getPlayerBalance(userData, rolloverAllowed);
         user.balance.should.equal(await Utils.convertDoubleToCents(balance));
         return user;
     },
 
-    getSessionIdByRolloverAllowed: async function (user, rollover_allowed) {
-        let session_id = rollover_allowed;
-        let condition  = Utils.isEmpty(session_id) || Utils.isEmpty(rolloverPersent[rollover_allowed]);
-        if (condition) {
-            session_id = user.session_id;
-        } else {
-            session_id = rolloverPersent[rollover_allowed];
-        }
-        return session_id;
-    },
-
 
 };
+
+async function getPlayerBalance(userData, rolloverAllowed) {
+    let session_id   = await getSessionIdByRolloverAllowed(userData, rolloverAllowed);
+    let {body: user} = await requestActions.send({session_id: session_id}).expect(200);
+    return user;
+}
+
+async function getSessionIdByRolloverAllowed(user, rollover_allowed) {
+    let session_id = rollover_allowed;
+    let condition  = Utils.isEmpty(session_id) || Utils.isEmpty(rolloverPersent[rollover_allowed]);
+    if (condition) {
+        session_id = user.session_id;
+    } else {
+        session_id = rolloverPersent[rollover_allowed];
+    }
+    return session_id;
+}
