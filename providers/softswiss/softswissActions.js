@@ -3,6 +3,8 @@ const rolloverPersent = require('../../fixtures/rolloverAllowed');
 const moment          = require('moment');
 const util            = require('util');
 const deepEqual       = require('../../utils/soft2BetAssert').deepEqual;
+const Utils           = require('../../utils/utils');
+const _               = require('lodash');
 
 const log4js = require('log4js');
 const logger = log4js.getLogger();
@@ -14,7 +16,7 @@ module.exports = {
         await requestActions.checkServiceStatus();
     },
 
-    autorizeUser    : async function (user) {
+    autorizeUser: async function (user) {
         let req = {
             "session_id": user.value,
             "user_id"   : user.user_id,
@@ -39,22 +41,11 @@ module.exports = {
         return response;
 
     },
-    getPlayerBalance: async function (userData, rolloverAllowed) {
-        let session_id   = await this.getSessionIdByRolloverAllowed(userData, rolloverAllowed);
-        let {body: user} = await requestActions.send({session_id: session_id}).expect(200);
-        return user;
-    },
 
-    playerBalanceForRolloverAllowedIsFollowing: async function (userData, rolloverAllowed, balance) {
-
-        let user = await this.getPlayerBalance(userData, rolloverAllowed);
-        user.balance.should.equal(parseInt(balance.toString().replace('.', '')));
-        return user;
-    },
 
     betAction: async function (user, amount, rolloverAllowed) {
         let session_id = await this.getSessionIdByRolloverAllowed(user, rolloverAllowed);
-        let betAmount  = await parseInt(amount.toString().replace('.', ''));
+        let betAmount  = await Utils.convertDoubleToCents(amount);
 
         let action_id = "" + moment().valueOf();
 
@@ -86,8 +77,8 @@ module.exports = {
         let win_action_id = "" + (moment().valueOf() + 1);
         let round_id      = "" + (moment().valueOf() + 2);
 
-        let betAmount = await parseInt(bet.toString().replace('.', ''));
-        let winAmount = await parseInt(win.toString().replace('.', ''));
+        let betAmount = await Utils.convertDoubleToCents(bet);
+        let winAmount = await Utils.convertDoubleToCents(win);
 
 
         return await requestActions.send({
@@ -136,19 +127,55 @@ module.exports = {
 
     },
 
+    winForLastBet: async function (user, amount) {
+        let session_id = await this.getSessionIdByRolloverAllowed(user);
+
+        let action_id = "" + moment().valueOf();
+        let winAmount = await Utils.convertDoubleToCents(amount);
+
+        return await requestActions.send({
+            "session_id": session_id,
+            "user_id"   : user.value,
+            "currency"  : user.currency,
+            "game"      : "amatic:BookOfAztec",
+            "game_id"   : response.body.game_id,
+            "finished"  : true,
+            "action"    :
+                {
+                    "action": "win",
+                    action_id,
+                    amount  : winAmount
+
+                }
+
+        });
+
+
+    },
+
+    getPlayerBalance: async function (userData, rolloverAllowed) {
+        let session_id   = await this.getSessionIdByRolloverAllowed(userData, rolloverAllowed);
+        let {body: user} = await requestActions.send({session_id: session_id}).expect(200);
+        return user;
+    },
+
+    playerBalanceForRolloverAllowedIsFollowing: async function (userData, rolloverAllowed, balance) {
+
+        let user = await this.getPlayerBalance(userData, rolloverAllowed);
+        user.balance.should.equal(await Utils.convertDoubleToCents(balance));
+        return user;
+    },
+
     getSessionIdByRolloverAllowed: async function (user, rollover_allowed) {
         let session_id = rollover_allowed;
-        if (this.isEmpty(session_id) || this.isEmpty(rolloverPersent[rollover_allowed])) {
+        let condition  = Utils.isEmpty(session_id) || Utils.isEmpty(rolloverPersent[rollover_allowed]);
+        if (condition) {
             session_id = user.session_id;
         } else {
             session_id = rolloverPersent[rollover_allowed];
         }
         return session_id;
     },
-
-    isEmpty: function (value) {
-        return typeof value == 'string' && ! value.trim() || typeof value == 'undefined' || value === null;
-    }
 
 
 };

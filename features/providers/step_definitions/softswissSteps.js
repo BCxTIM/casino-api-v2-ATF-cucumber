@@ -38,4 +38,9 @@ defineSupportCode(function ({Given, Then, When}) {
         let user = await userData.getUserDataByName(name);
         response = await softswissActions.rollbackLastAction(user);
     });
+    When(/^win (\d+.\d+) for last bet action for '(.*)' user$/, async function (amount, name) {
+        let user = await userData.getUserDataByName(name);
+        response = await softswissActions.winForLastBet(user, amount);
+
+    });
 });
