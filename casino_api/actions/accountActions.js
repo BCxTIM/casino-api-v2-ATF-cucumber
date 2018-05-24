@@ -6,6 +6,8 @@ const logger = log4js.getLogger();
 module.exports = {
 
     getAccountInfoByUser: async function (user, field) {
+        logger.debug("Get account info by user");
+
         let req = {
             "value"    : user.value.toString(),
             "search_by": field

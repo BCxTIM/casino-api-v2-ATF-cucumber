@@ -7,23 +7,26 @@ const log4js = require('log4js');
 const logger = log4js.getLogger();
 
 defineSupportCode(function ({Before, After, setDefaultTimeout}) {
-    setDefaultTimeout(60 * 1000);
+    setDefaultTimeout(20 * 1000);
 
     global.response = {};
 
     After(async function () {
         logger.debug("Remove balance and bonus");
-        await Promise.all(userData.getAllUsernames().map(async function (username) {
-            if (username.includes("BCX")) {
-                let user  = await userData.getUserDataByName(username);
-                let bonus = await bonusActions.getBonusByStatusAndUser('active', user);
-                if (bonus.length > 0) {
-                    await bonusActions.updateStatusBonus(bonus[0], 'canceled');
-                }
-                await balanceActions.removeAllBalance(user);
-            }
 
-        }));
+        const users = userData.getAllUsernames();
+
+        for (let i = 0; i < users.length; i ++) {
+            let username = users[i];
+            if (username.includes("BCX")) {
+                try {
+                    await removeBalanceAndBonus(username);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+
     });
 
     Before(async function (scenario) {
@@ -43,3 +46,16 @@ defineSupportCode(function ({Before, After, setDefaultTimeout}) {
 
 });
 
+async function removeBalanceAndBonus(username) {
+    return new Promise(async (resolve, reject) => {
+        let user  = await userData.getUserDataByName(username);
+        let bonus = await bonusActions.getBonusByStatusAndUser('active', user);
+        if (bonus.length > 0) {
+            await bonusActions.updateStatusBonus(bonus[0], 'canceled').catch(reject);
+        }
+        await balanceActions.removeAllBalance(user).catch(reject);
+        resolve(true);
+
+    })
+
+}

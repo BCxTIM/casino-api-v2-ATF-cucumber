@@ -9,6 +9,8 @@ const logger = log4js.getLogger();
 module.exports = {
 
     addBalance: async function (user, amount) {
+        logger.debug("Add balance");
+
         let url = "/gateway/v2/payment/deposit";
 
         let req = {
@@ -26,6 +28,8 @@ module.exports = {
     },
 
     removeBalance: async function (user, amount) {
+        logger.debug("Remove balance");
+
         let url = "/gateway/v2/payment/withdraw";
 
         let req = {
@@ -45,9 +49,11 @@ module.exports = {
 
 
     removeAllBalance: async function (user) {
+        logger.debug("Remove all balance");
+
         let url = "/gateway/v2/payment/withdraw";
 
-        let account = await accountActions.getAccountInfoByUser(user);
+        let account = await accountActions.getAccountInfoByUser(user, 'login');
 
         let req = {
             "value"    : user.value,

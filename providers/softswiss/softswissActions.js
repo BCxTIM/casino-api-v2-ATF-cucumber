@@ -13,10 +13,14 @@ const logger = log4js.getLogger();
 module.exports = {
 
     checkServerStatus: async function () {
+        logger.debug("Check server status");
+
         await requestActions.checkServiceStatus();
     },
 
     autorizeUser: async function (user) {
+        logger.debug("Authorize user");
+
         let req = {
             "session_id": user.value,
             "user_id"   : user.user_id,
@@ -44,6 +48,8 @@ module.exports = {
 
 
     betAction: async function (user, amount, rolloverAllowed) {
+        logger.debug("Bet action");
+
         let session_id = await getSessionIdByRolloverAllowed(user, rolloverAllowed);
         let betAmount  = await Utils.convertDoubleToCents(amount);
 
@@ -70,6 +76,8 @@ module.exports = {
     },
 
     betWinAction: async function (user, bet, win, rolloverAllowed) {
+        logger.debug("Bet and win action");
+
 
         let session_id = await getSessionIdByRolloverAllowed(user, rolloverAllowed);
 
@@ -105,6 +113,8 @@ module.exports = {
     },
 
     rollbackLastAction: async function (user) {
+        logger.debug("Rollback action");
+
         let session_id = await getSessionIdByRolloverAllowed(user);
         let action_id  = await response.body.transactions.pop().action_id;
 
@@ -128,6 +138,8 @@ module.exports = {
     },
 
     winForLastBet: async function (user, amount) {
+        logger.debug("Win for last bet action");
+
         let session_id = await getSessionIdByRolloverAllowed(user);
 
         let action_id = "" + moment().valueOf();

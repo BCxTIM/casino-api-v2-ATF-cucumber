@@ -11,6 +11,8 @@ const logger = log4js.getLogger();
 
 module.exports = {
     addBonus: async function (user, data) {
+        logger.debug("Add bonus for " + user.value);
+
 
         let url = "/gateway/v2/payment/add_bonus";
 
@@ -45,6 +47,9 @@ module.exports = {
     },
 
     addFreeespin: async function (user, data) {
+
+        logger.debug("Add freespin for " + user.value);
+
 
         let url = "/gateway/v2/payment/add_bonus";
 
@@ -81,6 +86,9 @@ module.exports = {
 
 
     getBonusByStatusAndUser: async function (status, user) {
+        logger.debug("Get bonus status by user  " + user.value);
+
+
         let start = await timestampGenerator.getTimestamp('now', 'YYYY-MM-DD');
         let end   = await timestampGenerator.getTimestamp('{"days": 1}', 'YYYY-MM-DD');
 
@@ -103,6 +111,8 @@ module.exports = {
     },
 
     updateStatusBonus: async function (bonus, status) {
+        logger.debug("Update status bonus " + bonus.bonus_id);
+
         let url      = "/gateway/v2/payment/update_bonus";
         let bonus_id = await bonus.bonus_id;
 
@@ -113,13 +123,16 @@ module.exports = {
 
         let {body: {result: result}} = await requestActions.send(req, url).expect(200);
 
-        await shouldEqual(util.format('Response bonus id [%s] is equal to [%s]', result.bonus.bonus_id, bonus_id), result.bonus.bonus_id, bonus_id);
-        await shouldEqual(util.format('Response bonus status [%s] is equal to [%s]', result.bonus.status, status), result.bonus.status, status);
+        shouldEqual(util.format('Response bonus id [%s] is equal to [%s]', result.bonus.bonus_id, bonus_id), result.bonus.bonus_id, bonus_id);
+        shouldEqual(util.format('Response bonus status [%s] is equal to [%s]', result.bonus.status, status), result.bonus.status, status);
 
 
     },
 
     updateBonusWithError: async function (bonusId, status) {
+
+        logger.debug("Update bonus with error " + bonusId);
+
         let url = "/gateway/v2/payment/update_bonus";
 
         let req    = {
